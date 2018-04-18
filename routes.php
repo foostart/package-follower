@@ -5,9 +5,9 @@ use Illuminate\Session\TokenMismatchException;
 /**
  * FRONT
  */
-Route::get('sample', [
-    'as' => 'sample',
-    'uses' => 'Foostart\Sample\Controllers\Front\SampleFrontController@index'
+Route::get('follower', [
+    'as' => 'follower',
+    'uses' => 'Foostart\Follower\Controllers\Front\FollowerFrontController@index'
 ]);
 
 
@@ -19,41 +19,41 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['middleware' => ['admin_logged', 'can_see']], function () {
 
         ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////SAMPLES ROUTE///////////////////////////////
+        ////////////////////////////FollowerS ROUTE///////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         /**
          * list
          */
-        Route::get('admin/sample/list', [
-            'as' => 'admin_sample',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleAdminController@index'
+        Route::get('admin/follower/list', [
+            'as' => 'admin_follower',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@index'
         ]);
 
         /**
          * edit-add
          */
-        Route::get('admin/sample/edit', [
-            'as' => 'admin_sample.edit',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleAdminController@edit'
+        Route::get('admin/follower/edit', [
+            'as' => 'admin_follower.edit',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@edit'
         ]);
 
         /**
          * post
          */
-        Route::post('admin/sample/edit', [
-            'as' => 'admin_sample.post',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleAdminController@post'
+        Route::post('admin/follower/edit', [
+            'as' => 'admin_follower.post',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@post'
         ]);
 
         /**
          * delete
          */
-        Route::get('admin/sample/delete', [
-            'as' => 'admin_sample.delete',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleAdminController@delete'
+        Route::get('admin/follower/delete', [
+            'as' => 'admin_follower.delete',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@delete'
         ]);
         ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////SAMPLES ROUTE///////////////////////////////
+        ////////////////////////////FollowerS ROUTE///////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
 
@@ -63,32 +63,32 @@ Route::group(['middleware' => ['web']], function () {
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////CATEGORIES///////////////////////////////
         ////////////////////////////////////////////////////////////////////////
-         Route::get('admin/sample_category', [
-            'as' => 'admin_sample_category',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleCategoryAdminController@index'
+         Route::get('admin/follower_category', [
+            'as' => 'admin_follower_category',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@index'
         ]);
 
         /**
          * edit-add
          */
-        Route::get('admin/sample_category/edit', [
-            'as' => 'admin_sample_category.edit',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleCategoryAdminController@edit'
+        Route::get('admin/follower_category/edit', [
+            'as' => 'admin_follower_category.edit',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@edit'
         ]);
 
         /**
          * post
          */
-        Route::post('admin/sample_category/edit', [
-            'as' => 'admin_sample_category.post',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleCategoryAdminController@post'
+        Route::post('admin/follower_category/edit', [
+            'as' => 'admin_follower_category.post',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@post'
         ]);
          /**
          * delete
          */
-        Route::get('admin/sample_category/delete', [
-            'as' => 'admin_sample_category.delete',
-            'uses' => 'Foostart\Sample\Controllers\Admin\SampleCategoryAdminController@delete'
+        Route::get('admin/follower_category/delete', [
+            'as' => 'admin_follower_category.delete',
+            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@delete'
         ]);
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////CATEGORIES///////////////////////////////

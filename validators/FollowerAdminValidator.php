@@ -1,15 +1,15 @@
 <?php
-namespace Foostart\Sample\Validators;
+namespace Foostart\Follower\Validators;
 
 use Event;
 use \LaravelAcl\Library\Validators\AbstractValidator;
 
 use Illuminate\Support\MessageBag as MessageBag;
 
-class SampleAdminValidator extends AbstractValidator
+class FollowerAdminValidator extends AbstractValidator
 {
     protected static $rules = array(
-        'sample_name' => 'required',
+        'follower_name' => 'required',
     );
 
     protected static $messages = [];
@@ -37,7 +37,7 @@ class SampleAdminValidator extends AbstractValidator
 
     public function messages() {
         self::$messages = [
-            'required' => ':attribute '.trans('sample::sample_admin.required')
+            'required' => ':attribute '.trans('follower::follower_admin.required')
         ];
     }
 
@@ -45,14 +45,14 @@ class SampleAdminValidator extends AbstractValidator
 
         $flag = TRUE;
 
-        $min_lenght = config('sample_admin.name_min_length');
-        $max_lenght = config('sample_admin.name_max_length');
+        $min_lenght = config('follower_admin_.name_min_lengh');
+        $max_lenght = config('follower_admin_.name_max_lengh');
 
-        $sample_name = @$input['sample_name'];
+        $follower_name = @$input['follower_name'];
 
-        if ((strlen($sample_name) < $min_lenght)  || ((strlen($sample_name) > $max_lenght))) {
+        if ((strlen($follower_name) <= $min_lenght)  || ((strlen($follower_name) >= $max_lenght))) {
             $this->errors->add('name_unvalid_length', trans('name_unvalid_length', ['NAME_MIN_LENGTH' => $min_lenght, 'NAME_MAX_LENGTH' => $max_lenght]));
-            $flag = FALSE;
+            $flag = TRUE;
         }
 
         return $flag;

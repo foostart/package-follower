@@ -1,7 +1,7 @@
 @extends('laravel-authentication-acl::admin.layouts.base-2cols')
 
 @section('title')
-Admin area: {{ trans('sample::sample_admin.page_category') }}
+Admin area: {{ trans('follower::follower_admin.page_category') }}
 @stop
 
 @section('content')
@@ -16,7 +16,7 @@ Admin area: {{ trans('sample::sample_admin.page_category') }}
                     <h3 class="panel-title bariol-thin">
                         <i class="fa fa-group"></i> 
                         {!! $request->all() ? 
-                            trans('sample::sample_admin.page_search') : trans('sample::sample_admin.page_category') 
+                            trans('follower::follower_admin.page_search') : trans('follower::follower_admin.page_category') 
                         !!}
                     </h3>
                 </div>
@@ -35,12 +35,12 @@ Admin area: {{ trans('sample::sample_admin.page_category') }}
                 @endif 
                 <!--/END ERRORS-->
                 <div class="panel-body">
-                    @include('sample::sample_category.admin.sample_category_item')
+                    @include('follower::follower_category.admin.follower_category_item')
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            @include('sample::sample_category.admin.sample_category_search')
+            @include('follower::follower_category.admin.follower_category_search')
         </div>
     </div>
 </div>
@@ -50,7 +50,7 @@ Admin area: {{ trans('sample::sample_admin.page_category') }}
 <!-- DELETE CONFIRM -->
 <script>
     $(".delete").click(function () {
-        return confirm({{ trans('sample:sample_admin.delete_confirm') }});
+        return confirm({{ trans('follower:follower_admin.delete_confirm') }});
     });
 </script>
 <!-- /END DELETE CONFIRM -->

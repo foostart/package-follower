@@ -1,6 +1,6 @@
 <?php
 
-namespace Foostart\Sample;
+namespace Foostart\Follower;
 
 use Illuminate\Support\ServiceProvider;
 use LaravelAcl\Authentication\Classes\Menu\SentryMenuFactory;
@@ -9,7 +9,7 @@ use URL, Route;
 use Illuminate\Http\Request;
 
 
-class SampleServiceProvider extends ServiceProvider {
+class FollowerServiceProvider extends ServiceProvider {
 
     /**
      * Bootstrap the application services.
@@ -21,22 +21,22 @@ class SampleServiceProvider extends ServiceProvider {
          * Publish
          */
          $this->publishes([
-            __DIR__.'/config/sample_admin.php' => config_path('sample_admin.php'),
+            __DIR__.'/config/follower_admin.php' => config_path('follower_admin.php'),
         ],'config');
 
-        $this->loadViewsFrom(__DIR__ . '/views', 'sample');
+        $this->loadViewsFrom(__DIR__ . '/views', 'follower');
 
 
         /**
          * Translations
          */
-         $this->loadTranslationsFrom(__DIR__.'/lang', 'sample');
+         $this->loadTranslationsFrom(__DIR__.'/lang', 'follower');
 
 
         /**
          * Load view composer
          */
-        $this->sampleViewComposer($request);
+        $this->followerViewComposer($request);
 
          $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations')
@@ -55,37 +55,37 @@ class SampleServiceProvider extends ServiceProvider {
         /**
          * Load controllers
          */
-        $this->app->make('Foostart\Sample\Controllers\Admin\SampleAdminController');
+        $this->app->make('Foostart\Follower\Controllers\Admin\FollowerAdminController');
 
          /**
          * Load Views
          */
-        $this->loadViewsFrom(__DIR__ . '/views', 'sample');
+        $this->loadViewsFrom(__DIR__ . '/views', 'follower');
     }
 
     /**
      *
      */
-    public function sampleViewComposer(Request $request) {
+    public function followerViewComposer(Request $request) {
 
-        view()->composer('sample::sample*', function ($view) {
+        view()->composer('follower::follower*', function ($view) {
             global $request;
-            $sample_id = $request->get('id');
-            $is_action = empty($sample_id)?'page_add':'page_edit';
+            $follower_id = $request->get('id');
+            $is_action = empty($follower_id)?'page_add':'page_edit';
 
             $view->with('sidebar_items', [
 
                 /**
-                 * Samples
+                 * followers
                  */
                 //list
-                trans('sample::sample_admin.page_list') => [
-                    'url' => URL::route('admin_sample'),
+                trans('follower::follower_admin.page_list') => [
+                    'url' => URL::route('admin_follower'),
                     "icon" => '<i class="fa fa-users"></i>'
                 ],
                 //add
-                trans('sample::sample_admin.'.$is_action) => [
-                    'url' => URL::route('admin_sample.edit'),
+                trans('follower::follower_admin.'.$is_action) => [
+                    'url' => URL::route('admin_follower.edit'),
                     "icon" => '<i class="fa fa-users"></i>'
                 ],
 
@@ -93,8 +93,8 @@ class SampleServiceProvider extends ServiceProvider {
                  * Categories
                  */
                 //list
-                trans('sample::sample_admin.page_category_list') => [
-                    'url' => URL::route('admin_sample_category'),
+                trans('follower::follower_admin.page_category_list') => [
+                    'url' => URL::route('admin_follower_category'),
                     "icon" => '<i class="fa fa-users"></i>'
                 ],
             ]);
