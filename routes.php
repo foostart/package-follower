@@ -16,82 +16,96 @@ Route::get('follower', [
  */
 Route::group(['middleware' => ['web']], function () {
 
-    Route::group(['middleware' => ['admin_logged', 'can_see']], function () {
+    Route::group(['middleware' => ['admin_logged', 'can_see',],
+                  'namespace' => 'Foostart\Follower\Controllers\Admin',
+        ], function () {
 
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////FollowerS ROUTE///////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
+        /*
+          |-----------------------------------------------------------------------
+          | Manage follower
+          |-----------------------------------------------------------------------
+          | 1. List of followers
+          | 2. Edit follower
+          | 3. Delete follower
+          | 4. Add new follower
+          | 5. Manage configurations
+          | 6. Manage languages
+          |
+        */
+
         /**
          * list
          */
-        Route::get('admin/follower/list', [
-            'as' => 'admin_follower',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@index'
+        Route::get('admin/followers/list', [
+            'as' => 'followers.list',
+            'uses' => 'FollowerAdminController@index'
         ]);
 
         /**
          * edit-add
          */
-        Route::get('admin/follower/edit', [
-            'as' => 'admin_follower.edit',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@edit'
+        Route::get('admin/followers/edit', [
+            'as' => 'followers.edit',
+            'uses' => 'FollowerAdminController@edit'
+        ]);
+
+        /**
+         * copy
+         */
+        Route::get('admin/followers/copy', [
+            'as' => 'followers.copy',
+            'uses' => 'FollowerAdminController@copy'
         ]);
 
         /**
          * post
          */
-        Route::post('admin/follower/edit', [
-            'as' => 'admin_follower.post',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@post'
+        Route::post('admin/followers/edit', [
+            'as' => 'followers.post',
+            'uses' => 'FollowerAdminController@post'
         ]);
 
         /**
          * delete
          */
-        Route::get('admin/follower/delete', [
-            'as' => 'admin_follower.delete',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerAdminController@delete'
-        ]);
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////FollowerS ROUTE///////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-
-
-
-
-        
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////CATEGORIES///////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-         Route::get('admin/follower_category', [
-            'as' => 'admin_follower_category',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@index'
+        Route::get('admin/followers/delete', [
+            'as' => 'followers.delete',
+            'uses' => 'FollowerAdminController@delete'
         ]);
 
         /**
-         * edit-add
+         * trash
          */
-        Route::get('admin/follower_category/edit', [
-            'as' => 'admin_follower_category.edit',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@edit'
+         Route::get('admin/followers/trash', [
+            'as' => 'followers.trash',
+            'uses' => 'FollowerAdminController@trash'
         ]);
 
         /**
-         * post
-         */
-        Route::post('admin/follower_category/edit', [
-            'as' => 'admin_follower_category.post',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@post'
+         * configs
+        */
+        Route::get('admin/followers/config', [
+            'as' => 'followers.config',
+            'uses' => 'FollowerAdminController@config'
         ]);
-         /**
-         * delete
-         */
-        Route::get('admin/follower_category/delete', [
-            'as' => 'admin_follower_category.delete',
-            'uses' => 'Foostart\Follower\Controllers\Admin\FollowerCategoryAdminController@delete'
+
+        Route::post('admin/followers/config', [
+            'as' => 'followers.config',
+            'uses' => 'FollowerAdminController@config'
         ]);
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////CATEGORIES///////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
+
+        /**
+         * language
+        */
+        Route::get('admin/followers/lang', [
+            'as' => 'followers.lang',
+            'uses' => 'FollowerAdminController@lang'
+        ]);
+
+        Route::post('admin/followers/lang', [
+            'as' => 'followers.lang',
+            'uses' => 'FollowerAdminController@lang'
+        ]);
+
     });
 });

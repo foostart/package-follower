@@ -4,10 +4,9 @@ namespace Foostart\Follower;
 
 use Illuminate\Support\ServiceProvider;
 use LaravelAcl\Authentication\Classes\Menu\SentryMenuFactory;
-
-use URL, Route;
+use URL,
+    Route;
 use Illuminate\Http\Request;
-
 
 class FollowerServiceProvider extends ServiceProvider {
 
@@ -17,30 +16,27 @@ class FollowerServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot(Request $request) {
-        /**
-         * Publish
-         */
-         $this->publishes([
-            __DIR__.'/config/follower_admin.php' => config_path('follower_admin.php'),
-        ],'config');
 
-        $this->loadViewsFrom(__DIR__ . '/views', 'follower');
+        //generate context key
+//        $this->generateContextKey();
 
+        // load view
+        $this->loadViewsFrom(__DIR__ . '/Views', 'package-follower');
 
-        /**
-         * Translations
-         */
-         $this->loadTranslationsFrom(__DIR__.'/lang', 'follower');
+        // include view composers
+        require __DIR__ . "/composers.php";
 
+        // publish config
+        $this->publishConfig();
 
-        /**
-         * Load view composer
-         */
-        $this->followerViewComposer($request);
+        // publish lang
+        $this->publishLang();
 
-         $this->publishes([
-                __DIR__.'/../database/migrations/' => database_path('migrations')
-            ], 'migrations');
+        // publish views
+        $this->publishViews();
+
+        // publish assets
+        $this->publishAssets();
 
     }
 
@@ -51,55 +47,46 @@ class FollowerServiceProvider extends ServiceProvider {
      */
     public function register() {
         include __DIR__ . '/routes.php';
-
-        /**
-         * Load controllers
-         */
-        $this->app->make('Foostart\Follower\Controllers\Admin\FollowerAdminController');
-
-         /**
-         * Load Views
-         */
-        $this->loadViewsFrom(__DIR__ . '/views', 'follower');
     }
 
     /**
-     *
+     * Public config to system
+     * @source: vendor/foostart/package-follower/config
+     * @destination: config/
      */
-    public function followerViewComposer(Request $request) {
+    protected function publishConfig() {
+        $this->publishes([
+            __DIR__ . '/config/package-follower.php' => config_path('package-follower.php'),
+                ], 'config');
+    }
 
-        view()->composer('follower::follower*', function ($view) {
-            global $request;
-            $follower_id = $request->get('id');
-            $is_action = empty($follower_id)?'page_add':'page_edit';
+    /**
+     * Public language to system
+     * @source: vendor/foostart/package-follower/lang
+     * @destination: resources/lang
+     */
+    protected function publishLang() {
+        $this->publishes([
+            __DIR__ . '/lang' => base_path('resources/lang'),
+        ]);
+    }
 
-            $view->with('sidebar_items', [
+    /**
+     * Public view to system
+     * @source: vendor/foostart/package-follower/Views
+     * @destination: resources/views/vendor/package-follower
+     */
+    protected function publishViews() {
 
-                /**
-                 * followers
-                 */
-                //list
-                trans('follower::follower_admin.page_list') => [
-                    'url' => URL::route('admin_follower'),
-                    "icon" => '<i class="fa fa-users"></i>'
-                ],
-                //add
-                trans('follower::follower_admin.'.$is_action) => [
-                    'url' => URL::route('admin_follower.edit'),
-                    "icon" => '<i class="fa fa-users"></i>'
-                ],
+        $this->publishes([
+            __DIR__ . '/Views' => base_path('resources/views/vendor/package-follower'),
+        ]);
+    }
 
-                /**
-                 * Categories
-                 */
-                //list
-                trans('follower::follower_admin.page_category_list') => [
-                    'url' => URL::route('admin_follower_category'),
-                    "icon" => '<i class="fa fa-users"></i>'
-                ],
-            ]);
-            //
-        });
+    protected function publishAssets() {
+        $this->publishes([
+            __DIR__ . '/public' => public_path('packages/foostart/package-follower'),
+        ]);
     }
 
 }
