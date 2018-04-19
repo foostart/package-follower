@@ -10,7 +10,7 @@ return [
     |
     */
     'menus' => [
-        'top-menu' => 'Samples'
+        'top-menu' => 'Followers'
     ],
 
 
@@ -48,7 +48,7 @@ return [
     */
     'columns' => [
         'order' => '#',
-        'name' => 'Sample name',
+        'name' => 'Follower name',
         'operations' => 'Operations',
         'updated_at' => 'Updated at',
         'filename' => 'File name',
@@ -122,7 +122,7 @@ return [
     |
     */
     'descriptions' => [
-        'form' => 'Sample form',
+        'form' => 'Follower form',
         'update' => 'Update follower',
         'name' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
         'category' => 'Click <a href=":href">here</a> to manage list of categories by token.',
@@ -168,10 +168,10 @@ return [
     |
     */
     'fields' => [
-        'id' => 'Sample ID',
-        'name' => 'Sample name',
-        'description' => 'Sample Description',
-        'overview' => 'Sample Overview',
+        'id' => 'Follower ID',
+        'name' => 'Follower name',
+        'description' => 'Follower Description',
+        'overview' => 'Follower Overview',
         'slug' => 'Slug',
         'updated_at' => 'Updated at'
     ],
@@ -189,11 +189,11 @@ return [
     |
     */
     'labels' => [
-        'name' => 'Sample name',
-        'overview' => 'Sample overview',
-        'description' => 'Sample description',
-        'image' => 'Sample image',
-        'files' => 'Sample files',
+        'name' => 'Follower name',
+        'overview' => 'Follower overview',
+        'description' => 'Follower description',
+        'image' => 'Follower image',
+        'files' => 'Follower files',
         'category' => 'Category name',
         'title-search' => 'Search follower',
         'title-backup' => 'Backups',
