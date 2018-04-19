@@ -61,7 +61,7 @@ class FollowerAdminController extends FooController {
 
         // //set category
         $this->category_ref_name = 'admin/followers';
-
+        $this->statuses = config('package-follower.status.list');
     }
 
     /**
@@ -80,6 +80,7 @@ class FollowerAdminController extends FooController {
             'items' => $items,
             'request' => $request,
             'params' => $params,
+            'statuses' => $this->statuses,
         ));
 
         return view($this->page_views['admin']['items'], $this->data_view);
@@ -124,7 +125,9 @@ class FollowerAdminController extends FooController {
             'categories' => $categories,
             'request' => $request,
             'context' => $context,
+            'statuses' => $this->statuses,
         ));
+
         return view($this->page_views['admin']['edit'], $this->data_view);
     }
 

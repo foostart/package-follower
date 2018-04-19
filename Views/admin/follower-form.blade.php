@@ -73,6 +73,15 @@
                                 ]),
             'errors' => $errors,
             ])
+            <!--STATUS-->
+            @include('package-category::admin.partials.radio', [
+                'name' => 'context_status',
+                'label' => trans($plang_admin.'.labels.follower-status'),
+                'value' => @$item->context_status,
+                'description' => trans($plang_admin.'.descriptions.follower-status'),
+                'items' => $statuses
+            ])
+            
             <!-- /LIST OF CATEGORIES -->
         </div>
 

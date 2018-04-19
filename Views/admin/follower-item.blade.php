@@ -60,6 +60,21 @@
                 </a>
             </th>
 
+            <!--REF-->
+            <?php $name = 'follower_status' ?>
+
+            <th class="hidden-xs" style='width:{{ $withs['name'] }}'>{!! trans($plang_admin.'.columns.follower-status') !!}
+                <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
+                    @if($sorting['items'][$name] == 'asc')
+                        <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                    @elseif($sorting['items'][$name] == 'desc')
+                        <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                    @else
+                        <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    @endif
+                </a>
+            </th>
+
             <!--OPERATIONS-->
             <th style='width:{{ $withs['operations'] }}'>
                 <span class='lb-delete-all'>
@@ -93,6 +108,18 @@
 
                 <!--UPDATED AT-->
                 <td> {!! $item->updated_at !!} </td>
+
+                <!--STATUS-->
+                <td style="text-align: center;">
+
+                    <?php $status = config('package-follower.status'); ?>
+
+                    @if($item->follower_status && (isset($status['list'][$item->follower_status])))
+                        <i class="fa fa-circle" style="color:{!! $status['color'][$item->follower_status] !!}" title='{!! $status["list"][$item->follower_status] !!}'></i>
+                    @else
+                    <i class="fa fa-circle-o red" title='{!! trans($plang_admin.".labels.unknown") !!}'></i>
+                    @endif
+                </td>
 
                 <!--OPERATOR-->
                 <td>

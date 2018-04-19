@@ -74,6 +74,10 @@ class Follower extends FooModel {
                 'name' => 'files',
                 'type' => 'Json',
             ],
+            'follower_status' => [
+                'name' => 'follower_status',
+                'type' => 'Int',
+            ],
         ];
 
         //check valid fields for inserting
@@ -216,11 +220,20 @@ class Follower extends FooModel {
                     }
                 }
             }
-        } elseif ($by_status) {
+
+        }
+            /*
+            *
+            *Get by status
+            *
+
+            elseif ($by_status) {
 
             $elo = $elo->where($this->table . '.'.$this->field_status, '=', $this->status['publish']);
 
         }
+            */
+     
 
         return $elo;
     }
@@ -272,7 +285,7 @@ class Follower extends FooModel {
                 $follower->$key = $value;
             }
 
-            $follower->$field_status = $this->status['publish'];
+
 
             $follower->save();
 
@@ -292,7 +305,7 @@ class Follower extends FooModel {
 
         $dataFields = $this->getDataFields($params, $this->fields);
 
-        $dataFields[$this->field_status] = $this->status['publish'];
+        //$dataFields[$this->field_status] = $this->status['publish'];
 
 
         $item = self::create($dataFields);
