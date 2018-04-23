@@ -1,6 +1,6 @@
 <?php
 
-namespace Foostart\follower\Controlers\Admin;
+namespace Foostart\Follower\Controlers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

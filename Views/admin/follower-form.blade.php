@@ -75,9 +75,9 @@
             ])
             <!--STATUS-->
             @include('package-category::admin.partials.radio', [
-                'name' => 'context_status',
+                'name' => 'follower_status',
                 'label' => trans($plang_admin.'.labels.follower-status'),
-                'value' => @$item->context_status,
+                'value' => @$item->follower_status,
                 'description' => trans($plang_admin.'.descriptions.follower-status'),
                 'items' => $statuses
             ])
