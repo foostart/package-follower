@@ -68,7 +68,9 @@ View::composer([
         $orders = [
             '' => trans($plang_admin.'.form.no-selected'),
             'id' => trans($plang_admin.'.fields.id'),
-            'follower_name' => trans($plang_admin.'.fields.name'),
+            'user_following_name' => trans($plang_admin.'.fields.name'),
+            'user_following_email' => trans($plang_admin.'.fields.email'),
+            'created_at' => trans($plang_admin.'.fields.created_at'),
             'updated_at' => trans($plang_admin.'.fields.updated_at'),
             'follower_status' => trans($plang_admin.'.fields.follower_status'),
         ];

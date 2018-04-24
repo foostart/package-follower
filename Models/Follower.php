@@ -3,6 +3,7 @@
 use Foostart\Category\Library\Models\FooModel;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Follower extends FooModel {
 
     /**
@@ -24,55 +25,17 @@ class Follower extends FooModel {
 
         //list of field in table
         $this->fillable = [
-            'follower_name',
-            'category_id',
-            'user_id',
-            'user_full_name',
-            'user_email',
-            'follower_overview',
-            'follower_description',
-            'follower_image',
-            'follower_files',
+            'user_following_id',
             'follower_status',
+            'created_at',
+            'updated_at',
         ];
 
         //list of fields for inserting
         $this->fields = [
-            'follower_name' => [
-                'name' => 'follower_name',
-                'type' => 'Text',
-            ],
-            'category_id' => [
-                'name' => 'category_id',
+            'user_following_id' => [
+                'name' => 'user_following_id',
                 'type' => 'Int',
-            ],
-            'user_id' => [
-                'name' => 'user_id',
-                'type' => 'Int',
-            ],
-            'user_full_name' => [
-                'name' => 'user_full_name',
-                'type' => 'Text',
-            ],
-            'user_email' => [
-                'name' => 'email',
-                'type' => 'Text',
-            ],
-            'follower_overview' => [
-                'name' => 'follower_overview',
-                'type' => 'Text',
-            ],
-            'follower_description' => [
-                'name' => 'follower_description',
-                'type' => 'Text',
-            ],
-            'follower_image' => [
-                'name' => 'follower_image',
-                'type' => 'Text',
-            ],
-            'follower_files' => [
-                'name' => 'files',
-                'type' => 'Json',
             ],
             'follower_status' => [
                 'name' => 'follower_status',
@@ -82,21 +45,17 @@ class Follower extends FooModel {
 
         //check valid fields for inserting
         $this->valid_insert_fields = [
-            'follower_name',
-            'user_id',
-            'category_id',
-            'user_full_name',
-            'updated_at',
-            'follower_overview',
-            'follower_description',
-            'follower_image',
-            'follower_files',
+            'user_following_id',
             'follower_status',
+            'created_at',
+            'updated_at',
         ];
 
         //check valid fields for ordering
         $this->valid_ordering_fields = [
-            'follower_name',
+            'user_following_id',
+            'follower_status',
+            'created_at',
             'updated_at',
             $this->field_status,
         ];
@@ -126,8 +85,8 @@ class Follower extends FooModel {
 
         //join to another tables
         $elo = $this->joinTable();
-
         //search filters
+
         $elo = $this->searchFilters($params, $elo);
 
         //select fields
@@ -155,7 +114,7 @@ class Follower extends FooModel {
         }
        //join to another tables
         $elo = $this->joinTable();
-
+        
         //search filters
         $elo = $this->searchFilters($params, $elo, FALSE);
 
@@ -209,9 +168,9 @@ class Follower extends FooModel {
                         case 'keyword':
                             if (!empty($value)) {
                                 $elo = $elo->where(function($elo) use ($value) {
-                                    $elo->where($this->table . '.follower_name', 'LIKE', "%{$value}%")
-                                    ->orWhere($this->table . '.follower_description','LIKE', "%{$value}%")
-                                    ->orWhere($this->table . '.follower_overview','LIKE', "%{$value}%");
+                                    // $elo->where($this->table . '.follower_name', 'LIKE', "%{$value}%")
+                                    // ->orWhere($this->table . '.follower_description','LIKE', "%{$value}%")
+                                    // ->orWhere($this->table . '.follower_overview','LIKE', "%{$value}%");
                                 });
                             }
                             break;
@@ -245,10 +204,10 @@ class Follower extends FooModel {
      */
     public function createSelect($elo) {
 
-        $elo = $elo->select($this->table . '.*',
-                            $this->table . '.follower_id as id'
-                );
-
+        $elo = $elo
+        ->join('users','followers.user_following_id', '=', 'users.id')
+        ->join('user_profile','followers.user_following_id', '=', 'user_profile.user_id')
+        ->select('users.email','user_profile.first_name','user_profile.last_name','followers.*');
         return $elo;
     }
 

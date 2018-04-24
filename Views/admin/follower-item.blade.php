@@ -2,9 +2,12 @@
 <?php
     $withs = [
         'order' => '5%',
-        'name' => '40%',
-        'updated_at' => '40%',
-        'operations' => '10%',
+        'name' => '20%',
+        'email' => '20%',
+        'updated_at' => '20%',
+        'created_at' => '20%',
+        'operations' => '5%',
+        'status' => '5%',
         'delete' => '5%',
     ];
 
@@ -31,7 +34,7 @@
             </th>
 
             <!-- NAME -->
-            <?php $name = 'follower_name' ?>
+            <?php $name = 'user_following_name' ?>
 
             <th class="hidden-xs" style='width:{{ $withs['name'] }}'>{!! trans($plang_admin.'.columns.name') !!}
                 <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
@@ -45,6 +48,34 @@
                 </a>
             </th>
 
+                        <!-- EMAIL -->
+            <?php $name = 'user_following_email' ?>
+
+            <th class="hidden-xs" style='width:{{ $withs['email'] }}'>{!! trans($plang_admin.'.columns.name') !!}
+                <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
+                    @if($sorting['items'][$name] == 'asc')
+                        <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                    @elseif($sorting['items'][$name] == 'desc')
+                        <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                    @else
+                        <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    @endif
+                </a>
+            </th>
+
+            <?php $name = 'created_at' ?>
+
+            <th class="hidden-xs" style='width:{{ $withs['created_at'] }}'>{!! trans($plang_admin.'.columns.created_at') !!}
+                <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
+                    @if($sorting['items'][$name] == 'asc')
+                        <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                    @elseif($sorting['items'][$name] == 'desc')
+                        <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                    @else
+                        <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    @endif
+                </a>
+            </th>
             <!-- NAME -->
             <?php $name = 'updated_at' ?>
 
@@ -63,7 +94,7 @@
             <!--REF-->
             <?php $name = 'follower_status' ?>
 
-            <th class="hidden-xs" style='width:{{ $withs['name'] }}'>{!! trans($plang_admin.'.columns.follower-status') !!}
+            <th class="hidden-xs" style='width:{{ $withs['status'] }}'>{!! trans($plang_admin.'.columns.follower-status') !!}
                 <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
                     @if($sorting['items'][$name] == 'asc')
                         <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
@@ -104,11 +135,13 @@
                 <td> <?php echo $counter; $counter++ ?> </td>
 
                 <!--NAME-->
-                <td> {!! $item->follower_name !!} </td>
-
+                <td> {!! $item->first_name !!} </td>
+                <!--NAME-->
+                <td> {!! $item->email !!} </td>
+                <!--UPDATED AT-->
+                <td> {!! $item->created_at !!} </td>
                 <!--UPDATED AT-->
                 <td> {!! $item->updated_at !!} </td>
-
                 <!--STATUS-->
                 <td style="text-align: center;">
 
@@ -182,3 +215,20 @@
     @parent
     {!! HTML::script('packages/foostart/package-follower/js/form-table.js')  !!}
 @stop
+<script src="http://training.local.com/packages/jacopo/laravel-authentication-acl/js/vendor/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" language="javascript">
+$(function() {
+    $('#selecctall').change(function(){
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if($(this).prop('checked')) {
+            $(".btn-delete-all").show();
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+            $(".btn-delete-all").hide();
+        }
+    });
+});
+$(".btn-delete-all").hide();
+
+</script>
