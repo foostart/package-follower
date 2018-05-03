@@ -36,7 +36,7 @@
             <!-- NAME -->
             <?php $name = 'user_following_name' ?>
 
-            <th class="hidden-xs" style='width:{{ $withs['name'] }}'>{!! trans($plang_admin.'.columns.name') !!}
+            <th class="hidden-xs" style='width:{{ $withs['name'] }}'>{!! trans($plang_admin.'.columns.follow_name') !!}
                 <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
                     @if($sorting['items'][$name] == 'asc')
                         <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
@@ -51,7 +51,7 @@
                         <!-- EMAIL -->
             <?php $name = 'user_following_email' ?>
 
-            <th class="hidden-xs" style='width:{{ $withs['email'] }}'>{!! trans($plang_admin.'.columns.name') !!}
+            <th class="hidden-xs" style='width:{{ $withs['email'] }}'>{!! trans($plang_admin.'.columns.follow_email') !!}
                 <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
                     @if($sorting['items'][$name] == 'asc')
                         <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
@@ -94,7 +94,7 @@
             <!--REF-->
             <?php $name = 'follower_status' ?>
 
-            <th class="hidden-xs" style='width:{{ $withs['status'] }}'>{!! trans($plang_admin.'.columns.follower-status') !!}
+            <th class="hidden-xs" style='width:{{ $withs['status'] }}'>{!! trans($plang_admin.'.columns.follower_status') !!}
                 <a href='{!! $sorting["url"][$name] !!}' class='tb-id' data-order='asc'>
                     @if($sorting['items'][$name] == 'asc')
                         <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>

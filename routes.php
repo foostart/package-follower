@@ -107,5 +107,17 @@ Route::group(['middleware' => ['web']], function () {
             'uses' => 'FollowerAdminController@lang'
         ]);
 
+
+        Route::get('admin/followers/add', [
+            'as' => 'followers.add',
+            'uses' => 'FollowerAdminController@add'
+        ]);
+        /**
+         * post
+         */
+        Route::post('admin/followers/postadd', [
+            'as' => 'followers.postadd',
+            'uses' => 'FollowerAdminController@postAdd'
+        ]);
     });
 });

@@ -27,6 +27,7 @@ class Follower extends FooModel {
         $this->fillable = [
             'user_following_id',
             'follower_status',
+            'deleted_flag',
             'created_at',
             'updated_at',
         ];
@@ -39,6 +40,10 @@ class Follower extends FooModel {
             ],
             'follower_status' => [
                 'name' => 'follower_status',
+                'type' => 'Int',
+            ],
+            'deleted_flag' => [
+                'name' => 'deleted_flag',
                 'type' => 'Int',
             ],
         ];
@@ -210,7 +215,13 @@ class Follower extends FooModel {
         ->select('users.email','user_profile.first_name','user_profile.last_name','followers.*');
         return $elo;
     }
-
+    public function uniqueObj($user_following_id) {
+            if (!empty($this->where('user_following_id',$user_following_id)->first())) {
+                return TRUE;
+            } else{
+                return FALSE;
+            }
+    }
     /**
      *
      * @param ARRAY $params list of parameters

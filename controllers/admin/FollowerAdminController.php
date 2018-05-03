@@ -14,7 +14,7 @@
 use Illuminate\Http\Request;
 use URL, Route, Redirect;
 use Illuminate\Support\Facades\App;
-
+use LaravelAcl\Authentication\Validators\UserValidator;
 use Foostart\Category\Library\Controllers\FooController;
 use Foostart\Follower\Models\Follower;
 use Foostart\Category\Models\Category;
@@ -25,17 +25,18 @@ class FollowerAdminController extends FooController {
 
     public $obj_item = NULL;
     public $obj_category = NULL;
-
+    protected $user_repository;
+    protected $user_validator;
     public function __construct() {
 
         parent::__construct();
         // models
         $this->obj_item = new Follower(array('perPage' => 10));
         $this->obj_category = new Category();
-
+        $this->user_repository = App::make('user_repository');
         // validators
         $this->obj_validator = new FollowerValidator();
-
+        $this->user_validator = new UserValidator();
         // set language files
         $this->plang_admin = 'follower-admin';
         $this->plang_front = 'follower-front';
@@ -394,6 +395,65 @@ class FollowerAdminController extends FooController {
 
         return view($this->page_views['admin']['edit'], $this->data_view);
     }
+
+
+
+
+    public function add(Request $request) {
+        $user_leader = $this->user_repository->isLeader();
+        $users = $this->user_repository->all($request->except(['page']));
+
+        $this->data_view = array_merge($this->data_view, array(
+            "users" => $users, 
+            "request" => $request, 
+            'statuses' => $this->statuses,
+        ));
+        return view($this->page_views['admin']['edit'], $this->data_view);
+    }
+
+    /**
+     * Processing data from POST method: add new item, edit existing item
+     * @return view edit page
+     * @date 27/12/2017
+     */
+    public function postAdd(Request $request) {
+
+        $item = NULL;
+
+        $params = array_merge($request->all(), $this->getUser());
+
+        $is_valid_request = $this->isValidRequest($request);
+        
+        $id = (int) $request->get('user_following_id');
+        $user_id = (int) $this->getUser()['user_id'];
+
+        if ($is_valid_request && $this->user_validator->validate($params)) {// valid data
+            $uniqueObj = $this->obj_item->uniqueObj($id);
+            var_dump($id);die();
+            // update existing item
+            if (!empty($id) && $id != $user_id) {
+                if (!empty($uniqueObj)) {
+                    // message
+                    $params['id'] = $id;
+                    $item = $this->obj_item->insertItem($params);
+                                                        return Redirect::route($this->root_router.'.list', ["id" => $item->id])
+                                    ->withMessage(trans($this->plang_admin.'.actions.follow-ok'));
+                }
+            }else{
+                return Redirect::route($this->root_router.'.list')
+                                    ->withMessage(trans($this->plang_admin.'.actions.follow-error'));
+            }
+
+        } else { // invalid data
+
+            $errors = $this->obj_validator->getErrors();
+
+            // passing the id incase fails editing an already existing item
+            return Redirect::route($this->root_router.'.add', $id ? ["id" => $id]: [])
+                    ->withInput()->withErrors($errors);
+        }
+    }
+
 
 
 }

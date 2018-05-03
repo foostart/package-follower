@@ -21,6 +21,8 @@ View::composer([
                 'package-follower::admin.follower-search',
                 'package-follower::admin.follower-config',
                 'package-follower::admin.follower-lang',
+                'package-follower::admin.follower-user-table',
+
     ], function ($view) {
 
         /**
@@ -39,8 +41,8 @@ View::composer([
          * $sidebar_items
          */
         $view->with('sidebar_items', [
-            trans('follower-admin.sidebar.add') => [
-                'url' => URL::route('followers.edit', []),
+            trans('follower-admin.sidebar.addfollower') => [
+                'url' => URL::route('followers.add', []),
                 'icon' => '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'
             ],
             trans('follower-admin.sidebar.list') => [
@@ -68,10 +70,14 @@ View::composer([
         $orders = [
             '' => trans($plang_admin.'.form.no-selected'),
             'id' => trans($plang_admin.'.fields.id'),
-            'user_following_name' => trans($plang_admin.'.fields.name'),
-            'user_following_email' => trans($plang_admin.'.fields.email'),
+            'user_following_name' => trans($plang_admin.'.fields.follow_name'),
+            'user_following_email' => trans($plang_admin.'.fields.follow_email'),
             'created_at' => trans($plang_admin.'.fields.created_at'),
             'updated_at' => trans($plang_admin.'.fields.updated_at'),
+            'email' => trans($plang_admin.'.fields.email'),
+            'first_name' => trans($plang_admin.'.fields.name'),
+            'last_name' => trans($plang_admin.'.fields.created_at'),
+            'last_login' => trans($plang_admin.'.fields.updated_at'),
             'follower_status' => trans($plang_admin.'.fields.follower_status'),
         ];
         $sorting = [
