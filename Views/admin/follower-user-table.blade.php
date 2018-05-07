@@ -28,8 +28,8 @@
         'first_name' => '20%',
         'email' => '20%',
         'last_name' => '20%',
-        'follower_status' => '20%',
-        'last_login' => '10%',
+        'follower_status' => '10%',
+        'last_login' => '20%',
         'delete' => '5%',
     ];
 
@@ -130,22 +130,20 @@
                             ?>
                             
                             @foreach($users as $user)
-                            <form method="POST" action="{!! URL::route('followers.postadd',['_token' => csrf_token()]) !!}" name="formName">
+                            <form method="POST" action="{!! URL::route('followers.postadd',['_token' => csrf_token()]) !!}" id="formName">
                             <tr>
                                 <td>{!! $user->id !!}</td>
                                 <td>{!! $user->email !!}</td>
                                 <td class="hidden-xs">{!! $user->first_name !!}</td>
                                 <td class="hidden-xs">{!! $user->last_name !!}</td>
-                                <td>{!! $user->activated ? '<i class="fa fa-circle green"></i>' : '<i class="fa fa-circle-o red"></i>' !!}</td>
+                                <td >{!! $user->activated ? '<i class="fa fa-circle green"></i>' : '<i class="fa fa-circle-o red"></i>' !!}</td>
                                 <td class="hidden-xs">{!! $user->last_login ? $user->last_login : trans('jacopo-admin.messages.message-last-login') !!}</td>
-                                <td>
+                                <td style="text-align: center;">
                                     <input type="hidden" name="user_following_id" value="{!! $user->id !!}">
-                                    @if(! $user->protected)
-                                    
-                                    <a href="#" onclick="this.forms['formName'].submit()"><i class="fa fa-plus-circle"></i></a>
+                                    @if(!isset($user->follow_flag))
+                                    <button type="submit" class="fa fa-plus-circle light-blue"></button>
                                     @else
-                                    <i class="fa fa-times fa-2x light-blue"></i>
-                                    <i class="fa fa-times fa-2x margin-left-12 light-blue"></i>
+                                    <button type="submit" class="fa fa-minus-circle red"></button>
                                     @endif
                                 </td>
                             </tr>

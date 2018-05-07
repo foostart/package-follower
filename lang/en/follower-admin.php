@@ -277,7 +277,7 @@ return [
     |
     */
     'confirms' => [
-        'delete' => 'Are you sure you want to delete this item?',
+        'delete' => 'Are you sure you want to unfollow this user?',
     ],
 
 

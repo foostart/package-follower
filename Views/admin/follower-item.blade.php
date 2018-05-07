@@ -23,7 +23,7 @@
     @endif
 </caption>
 
-<table class="table table-hover">
+<table class="table table-hover" >
 
     <thead>
         <tr style="height: 50px;">
@@ -143,43 +143,16 @@
                 <!--UPDATED AT-->
                 <td> {!! $item->updated_at !!} </td>
                 <!--STATUS-->
-                <td style="text-align: center;">
-
-                    <?php $status = config('package-follower.status'); ?>
-
-                    @if($item->follower_status && (isset($status['list'][$item->follower_status])))
-                        <i class="fa fa-circle" style="color:{!! $status['color'][$item->follower_status] !!}" title='{!! $status["list"][$item->follower_status] !!}'></i>
-                    @else
-                    <i class="fa fa-circle-o red" title='{!! trans($plang_admin.".labels.unknown") !!}'></i>
-                    @endif
-                </td>
-
+                <td>{!! $item->activated ? '<i class="fa fa-circle green"></i>' : '<i class="fa fa-circle-o red"></i>' !!}</td>
                 <!--OPERATOR-->
                 <td>
-                    <!--edit-->
-                    <a href="{!! URL::route('followers.edit', [   'id' => $item->id,
-                                                                '_token' => csrf_token()
-                                                            ])
-                            !!}">
-                        <i class="fa fa-edit f-tb-icon"></i>
-                    </a>
-
-                    <!--copy-->
-                    <a href="{!! URL::route('followers.copy',[    'cid' => $item->id,
-                                                                '_token' => csrf_token(),
-                                                            ])
-                             !!}"
-                        class="margin-left-5">
-                        <i class="fa fa-files-o f-tb-icon" aria-hidden="true"></i>
-                    </a>
-
                     <!--delete-->
-                    <a href="{!! URL::route('followers.delete',[  'id' => $item->id,
+                    <a href="{!! URL::route('followers.delete',[  'id' => $item->user_following_id,
                                                                 '_token' => csrf_token(),
                                                               ])
                              !!}"
                        class="margin-left-5 delete">
-                        <i class="fa fa-trash-o f-tb-icon"></i>
+                        <i class="fa fa-minus-circle red"></i>
                     </a>
 
                 </td>

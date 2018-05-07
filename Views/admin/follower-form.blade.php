@@ -22,7 +22,7 @@
                 @include('package-follower::admin.follower-user-table')
             </div>
             <div class="col-md-3">
-                @include('laravel-authentication-acl::admin.user.search')
+                @include('package-follower::admin.follower-user-search')
             </div>
         </div>
 </div>

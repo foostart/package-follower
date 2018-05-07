@@ -19,6 +19,8 @@ use Foostart\Category\Library\Controllers\FooController;
 use Foostart\Follower\Models\Follower;
 use Foostart\Category\Models\Category;
 use Foostart\Follower\Validators\FollowerValidator;
+use Foostart\Follower\Repository\FollowRepository;
+
 
 
 class FollowerAdminController extends FooController {
@@ -26,6 +28,7 @@ class FollowerAdminController extends FooController {
     public $obj_item = NULL;
     public $obj_category = NULL;
     protected $user_repository;
+    protected $follow_repository;
     protected $user_validator;
     public function __construct() {
 
@@ -34,6 +37,7 @@ class FollowerAdminController extends FooController {
         $this->obj_item = new Follower(array('perPage' => 10));
         $this->obj_category = new Category();
         $this->user_repository = App::make('user_repository');
+        $this->follow_repository = new FollowRepository();
         // validators
         $this->obj_validator = new FollowerValidator();
         $this->user_validator = new UserValidator();
@@ -88,117 +92,6 @@ class FollowerAdminController extends FooController {
     }
 
     /**
-     * Edit existing item by {id} parameters OR
-     * Add new item
-     * @return view edit page
-     * @date 26/12/2017
-     */
-    public function edit(Request $request) {
-
-        $item = NULL;
-        $categories = NULL;
-
-        $params = $request->all();
-        $params['id'] = $request->get('id', NULL);
-
-        $context = $this->obj_item->getContext($this->category_ref_name);
-
-        if (!empty($params['id'])) {
-
-            $item = $this->obj_item->selectItem($params, FALSE);
-
-            if (empty($item)) {
-                return Redirect::route($this->root_router.'.list')
-                                ->withMessage(trans($this->plang_admin.'.actions.edit-error'));
-            }
-        }
-
-        //get categories by context
-        $context = $this->obj_item->getContext($this->category_ref_name);
-        if ($context) {
-            $params['context_id'] = $context->context_id;
-            $categories = $this->obj_category->pluckSelect($params);
-        }
-
-        // display view
-        $this->data_view = array_merge($this->data_view, array(
-            'item' => $item,
-            'categories' => $categories,
-            'request' => $request,
-            'context' => $context,
-            'statuses' => $this->statuses,
-        ));
-
-        return view($this->page_views['admin']['edit'], $this->data_view);
-    }
-
-    /**
-     * Processing data from POST method: add new item, edit existing item
-     * @return view edit page
-     * @date 27/12/2017
-     */
-    public function post(Request $request) {
-
-        $item = NULL;
-
-        $params = array_merge($request->all(), $this->getUser());
-
-        $is_valid_request = $this->isValidRequest($request);
-
-        $id = (int) $request->get('id');
-
-        if ($is_valid_request && $this->obj_validator->validate($params)) {// valid data
-
-            // update existing item
-            if (!empty($id)) {
-
-                $item = $this->obj_item->find($id);
-
-                if (!empty($item)) {
-
-                    $params['id'] = $id;
-                    $item = $this->obj_item->updateItem($params);
-
-                    // message
-                    return Redirect::route($this->root_router.'.edit', ["id" => $item->id])
-                                    ->withMessage(trans($this->plang_admin.'.actions.edit-ok'));
-                } else {
-
-                    // message
-                    return Redirect::route($this->root_router.'.list')
-                                    ->withMessage(trans($this->plang_admin.'.actions.edit-error'));
-                }
-
-            // add new item
-            } else {
-
-                $item = $this->obj_item->insertItem($params);
-
-                if (!empty($item)) {
-
-                    //message
-                    return Redirect::route($this->root_router.'.edit', ["id" => $item->id])
-                                    ->withMessage(trans($this->plang_admin.'.actions.add-ok'));
-                } else {
-
-                    //message
-                    return Redirect::route($this->root_router.'.edit', ["id" => $item->id])
-                                    ->withMessage(trans($this->plang_admin.'.actions.add-error'));
-                }
-
-            }
-
-        } else { // invalid data
-
-            $errors = $this->obj_validator->getErrors();
-
-            // passing the id incase fails editing an already existing item
-            return Redirect::route($this->root_router.'.edit', $id ? ["id" => $id]: [])
-                    ->withInput()->withErrors($errors);
-        }
-    }
-
-    /**
      * Delete existing item
      * @return view list of items
      * @date 27/12/2017
@@ -208,10 +101,8 @@ class FollowerAdminController extends FooController {
         $item = NULL;
         $flag = TRUE;
         $params = array_merge($request->all(), $this->getUser());
-        $delete_type = isset($params['del-forever'])?'delete-forever':'delete-trash';
         $id = (int)$request->get('id');
         $ids = $request->get('ids');
-
         $is_valid_request = $this->isValidRequest($request);
 
         if ($is_valid_request && (!empty($id) || !empty($ids))) {
@@ -222,18 +113,18 @@ class FollowerAdminController extends FooController {
 
                 $params['id'] = $id;
 
-                if (!$this->obj_item->deleteItem($params, $delete_type)) {
+                if (!$this->obj_item->unFollow($params)) {
                     $flag = FALSE;
                 }
             }
             if ($flag) {
                 return Redirect::route($this->root_router.'.list')
-                                ->withMessage(trans($this->plang_admin.'.actions.delete-ok'));
+                                ->withMessage(trans($this->plang_admin.'.actions.unfollow-ok'));
             }
         }
 
         return Redirect::route($this->root_router.'.list')
-                        ->withMessage(trans($this->plang_admin.'.actions.delete-error'));
+                        ->withMessage(trans($this->plang_admin.'.actions.unfollow-error'));
     }
 
     /**
@@ -396,12 +287,16 @@ class FollowerAdminController extends FooController {
         return view($this->page_views['admin']['edit'], $this->data_view);
     }
 
-
+    /**
+     * Processing data from POST method: add new item, edit existing item
+     * @return view edit page
+     * @date 27/12/2017
+     */
 
 
     public function add(Request $request) {
         $user_leader = $this->user_repository->isLeader();
-        $users = $this->user_repository->all($request->except(['page']));
+        $users = $this->follow_repository->getlistUser($request);
 
         $this->data_view = array_merge($this->data_view, array(
             "users" => $users, 
@@ -421,7 +316,6 @@ class FollowerAdminController extends FooController {
         $item = NULL;
 
         $params = array_merge($request->all(), $this->getUser());
-
         $is_valid_request = $this->isValidRequest($request);
         
         $id = (int) $request->get('user_following_id');
@@ -429,23 +323,40 @@ class FollowerAdminController extends FooController {
 
         if ($is_valid_request && $this->user_validator->validate($params)) {// valid data
             $uniqueObj = $this->obj_item->uniqueObj($id);
-            var_dump($id);die();
+            $item = $this->obj_item->findIDUser($id);
             // update existing item
-            if (!empty($id) && $id != $user_id) {
-                if (!empty($uniqueObj)) {
-                    // message
+            if (!empty($item)){
+                // var_dump($item->follow_flag);die();
+                if ($item->follow_flag!=NULL) {
                     $params['id'] = $id;
-                    $item = $this->obj_item->insertItem($params);
-                                                        return Redirect::route($this->root_router.'.list', ["id" => $item->id])
+                    $item = $this->obj_item->unFollow($params);
+
+                    // message
+                    return Redirect::route($this->root_router.'.list', ["id" => $item->id])
+                                    ->withMessage(trans($this->plang_admin.'.actions.unfollow-ok'));
+                } else {
+                    $params['id'] = $id;
+                    $item = $this->obj_item->reFollow($params);
+                    // message
+                    return Redirect::route($this->root_router.'.list')
                                     ->withMessage(trans($this->plang_admin.'.actions.follow-ok'));
                 }
-            }else{
+
+            // add new item
+            } else {
+            if ($id != $user_id && empty($uniqueObj)) {
+                // message
+                $params['id'] = $id;
+                $params['follow_flag'] = 1;
+                $item = $this->obj_item->insertItem($params);
+                return Redirect::route($this->root_router.'.list', ["id" => $item->id])
+                                    ->withMessage(trans($this->plang_admin.'.actions.follow-ok'));
+            } else {
                 return Redirect::route($this->root_router.'.list')
                                     ->withMessage(trans($this->plang_admin.'.actions.follow-error'));
             }
-
-        } else { // invalid data
-
+        } 
+    } else { // invalid data
             $errors = $this->obj_validator->getErrors();
 
             // passing the id incase fails editing an already existing item

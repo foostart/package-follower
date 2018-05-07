@@ -2,6 +2,7 @@
 
 use Foostart\Category\Library\Models\FooModel;
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 
 class Follower extends FooModel {
@@ -27,7 +28,7 @@ class Follower extends FooModel {
         $this->fillable = [
             'user_following_id',
             'follower_status',
-            'deleted_flag',
+            'follow_flag',
             'created_at',
             'updated_at',
         ];
@@ -42,8 +43,8 @@ class Follower extends FooModel {
                 'name' => 'follower_status',
                 'type' => 'Int',
             ],
-            'deleted_flag' => [
-                'name' => 'deleted_flag',
+            'follow_flag' => [
+                'name' => 'follow_flag',
                 'type' => 'Int',
             ],
         ];
@@ -173,9 +174,9 @@ class Follower extends FooModel {
                         case 'keyword':
                             if (!empty($value)) {
                                 $elo = $elo->where(function($elo) use ($value) {
-                                    // $elo->where($this->table . '.follower_name', 'LIKE', "%{$value}%")
-                                    // ->orWhere($this->table . '.follower_description','LIKE', "%{$value}%")
-                                    // ->orWhere($this->table . '.follower_overview','LIKE', "%{$value}%");
+                                    $elo->where($this->table . '.follower_name', 'LIKE', "%{$value}%")
+                                    ->orWhere($this->table . '.follower_description','LIKE', "%{$value}%")
+                                    ->orWhere($this->table . '.follower_overview','LIKE', "%{$value}%");
                                 });
                             }
                             break;
@@ -210,18 +211,13 @@ class Follower extends FooModel {
     public function createSelect($elo) {
 
         $elo = $elo
+        ->where('followers.follow_flag',1)
         ->join('users','followers.user_following_id', '=', 'users.id')
         ->join('user_profile','followers.user_following_id', '=', 'user_profile.user_id')
-        ->select('users.email','user_profile.first_name','user_profile.last_name','followers.*');
+        ->select('users.email','users.activated','users.id','user_profile.first_name','user_profile.last_name','followers.*');
         return $elo;
     }
-    public function uniqueObj($user_following_id) {
-            if (!empty($this->where('user_following_id',$user_following_id)->first())) {
-                return TRUE;
-            } else{
-                return FALSE;
-            }
-    }
+
     /**
      *
      * @param ARRAY $params list of parameters
@@ -276,9 +272,15 @@ class Follower extends FooModel {
         $dataFields = $this->getDataFields($params, $this->fields);
 
         //$dataFields[$this->field_status] = $this->status['publish'];
+            try {
+                
+                 $item = self::create($dataFields);
 
+            } catch (Illuminate\Database\QueryException $e){
+                $errorCode = $e->errorInfo[1];
 
-        $item = self::create($dataFields);
+            }
+
 
         $key = $this->primaryKey;
         $item->id = $item->$key;
@@ -310,5 +312,24 @@ class Follower extends FooModel {
 
         return FALSE;
     }
+    public function uniqueObj($user_following_id) {
+            if (!empty($this->where('user_following_id',$user_following_id)->first())) {
+                return TRUE;
+            } else{
+                return FALSE;
+            }
+    }
+    public function unFollow($input = []) {
 
+        $this->where('user_following_id',$input['id'])->update(['follow_flag' => NULL]); 
+        return $this->where('user_following_id',$input['id'])->first();
+    }
+    public function reFollow($input = []) {
+
+        $this->where('user_following_id',$input['id'])->update(['follow_flag' => 1]); 
+        return $this->where('user_following_id',$input['id'])->first();
+    }
+    public function findIDUser($id) {
+        return $this->where('user_following_id',$id)->first();
+    }
 }
