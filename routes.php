@@ -119,5 +119,26 @@ Route::group(['middleware' => ['web']], function () {
             'as' => 'followers.postadd',
             'uses' => 'FollowerAdminController@postAdd'
         ]);
+
     });
+});
+Route::group(['middleware' => ['web']], function () {
+
+    Route::group(['middleware' => ['can_see',],
+                  'namespace' => 'Foostart\Follower\Controllers\User',
+    ], function () {
+        Route::get('user/followers/sample', [
+            'as' => 'followers.sample',
+            'uses' => 'FollowerUserController@index'
+        ]);
+        Route::get('user/followers/userAdd', [
+            'as' => 'followers.userAdd',
+            'uses' => 'FollowerUserController@userAdd'
+        ]);
+        Route::post('user/followers/userPostAdd', [
+            'as' => 'followers.userPostAdd',
+            'uses' => 'FollowerUserController@userPostAdd'
+        ]);
+    });
+
 });

@@ -247,45 +247,6 @@ class FollowerAdminController extends FooController {
         return view($this->page_views['admin']['lang'], $this->data_view);
     }
 
-    /**
-     * Edit existing item by {id} parameters OR
-     * Add new item
-     * @return view edit page
-     * @date 26/12/2017
-     */
-    public function copy(Request $request) {
-
-        $params = $request->all();
-
-        $item = NULL;
-        $params['id'] = $request->get('cid', NULL);
-
-        $context = $this->obj_item->getContext($this->category_ref_name);
-
-        if (!empty($params['id'])) {
-
-            $item = $this->obj_item->selectItem($params, FALSE);
-
-            if (empty($item)) {
-                return Redirect::route($this->root_router.'.list')
-                                ->withMessage(trans($this->plang_admin.'.actions.edit-error'));
-            }
-
-            $item->id = NULL;
-        }
-
-        $categories = $this->obj_category->pluckSelect($params);
-
-        // display view
-        $this->data_view = array_merge($this->data_view, array(
-            'item' => $item,
-            'categories' => $categories,
-            'request' => $request,
-            'context' => $context,
-        ));
-
-        return view($this->page_views['admin']['edit'], $this->data_view);
-    }
 
     /**
      * Processing data from POST method: add new item, edit existing item
